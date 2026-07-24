@@ -1,21 +1,12 @@
-from flask import Flask, render_template
+from flask import Flask 
 from config import Config
-from database.db import get_db_connection
+from routes.auth import auth
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-
-@app.route("/")
-def home():
-    connection = get_db_connection()
-
-    if connection:
-        connection.close()
-        return render_template("login.html")
-
-    return "❌ Database connection failed!"
-
+app.register_blueprint(auth)
 
 if __name__ == "__main__":
     app.run(debug=True)
