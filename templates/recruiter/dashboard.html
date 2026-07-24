@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recruiter Dashboard</title>
+</head>
+<body>
+
+<h1>Recruiter Dashboard</h1>
+
+<h2>Welcome {{ session['name'] }}</h2>
+
+<a href="{{ url_for('auth.logout') }}">Logout</a>
+
+</body>
+</html>

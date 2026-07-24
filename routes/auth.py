@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, session
 from database.db import get_db_connection
 
 auth = Blueprint("auth", __name__)
@@ -6,7 +6,7 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/")
 def home():
-    return render_template("login.html")
+    return render_template("auth/login.html")
 
 
 @auth.route("/login", methods=["POST"])
@@ -32,8 +32,12 @@ def login():
         user = cursor.fetchone()
 
         if user:
-            return f"Welcome {user['full_name']}!"
 
+            session["user_id"] = user["candidate_id"]
+            session["name"] = user["full_name"]
+            session["role"] = "candidate"
+
+            return redirect(url_for("candidate.dashboard"))
         else:
             return "Invalid Candidate Email or Password"
         
@@ -50,7 +54,12 @@ def login():
         user = cursor.fetchone()
 
         if user:
-            return f"Welcome Recruiter {user['hr_name']}!"
+
+            session["user_id"] = user["recruiter_id"]
+            session["name"] = user["hr_name"]
+            session["role"] = "recruiter"
+
+            return redirect(url_for("recruiter.dashboard"))
 
         else:
             return "Invalid Recruiter Email or Password"
@@ -68,7 +77,12 @@ def login():
         user = cursor.fetchone()
 
         if user:
-            return f"Welcome Admin {user['full_name']}!"
+
+            session["user_id"] = user["admin_id"]
+            session["name"] = user["full_name"]
+            session["role"] = "admin"
+
+            return redirect(url_for("admin.dashboard"))
 
         else:
             return "Invalid Admin Email or Password"
@@ -79,3 +93,10 @@ def login():
     Email: {email}<br>
     Password: {password}
     """
+
+@auth.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(url_for("auth.home"))
