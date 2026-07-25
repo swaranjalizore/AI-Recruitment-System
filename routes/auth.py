@@ -40,6 +40,8 @@ def login():
             session["name"] = user["full_name"]
             session["role"] = "candidate"
 
+            print("Session after login:", dict(session))
+
             return redirect(url_for("candidate.dashboard"))
         else:
             return "Invalid Candidate Email or Password"

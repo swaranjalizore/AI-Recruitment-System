@@ -9,5 +9,13 @@ Candidate Dashboard
 <h1>Candidate Dashboard</h1>
 
 <h2>Welcome {{ session["name"] }}</h2>
+<a href="{{ url_for('candidate.profile') }}" class="btn btn-primary">
+    My Profile
+</a>
+
+<a href="{{ url_for('auth.logout') }}" class="btn btn-danger">
+    Logout
+</a>
 
 {% endblock %}
+

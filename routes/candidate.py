@@ -70,3 +70,71 @@ def register():
     print("Connection Closed")
 
     return redirect(url_for("auth.login_page"))
+
+@candidate.route("/candidate/profile", methods=["GET", "POST"])
+def profile():
+
+    # Check if user is logged in
+    if "user_id" not in session:
+        return redirect(url_for("auth.login_page"))
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    # ================= UPDATE PROFILE =================
+    if request.method == "POST":
+
+        full_name = request.form["full_name"]
+        phone = request.form["phone"]
+        education = request.form["education"]
+        skills = request.form["skills"]
+        experience = request.form["experience"]
+        location = request.form["location"]
+
+        query = """
+        UPDATE candidate
+        SET
+            full_name = %s,
+            phone = %s,
+            education = %s,
+            skills = %s,
+            experience = %s,
+            location = %s
+        WHERE candidate_id = %s
+        """
+
+        cursor.execute(
+            query,
+            (
+                full_name,
+                phone,
+                education,
+                skills,
+                experience,
+                location,
+                session["user_id"]
+            )
+        )
+
+        connection.commit()
+        connection.close()
+
+        return redirect(url_for("candidate.profile"))
+
+    # ================= SHOW PROFILE =================
+    query = """
+    SELECT *
+    FROM candidate
+    WHERE candidate_id = %s
+    """
+
+    cursor.execute(query, (session["user_id"],))
+
+    user = cursor.fetchone()
+
+    connection.close()
+
+    return render_template(
+        "candidate/profile.html",
+        user=user
+    )
