@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
 
 <h1>Admin Dashboard</h1>
 
-<h2>Welcome {{ session['name'] }}</h2>
+<h2>Welcome {{ session["name"] }}</h2>
 
-<a href="{{ url_for('auth.logout') }}">Logout</a>
-
-</body>
-</html>
+{% endblock %}

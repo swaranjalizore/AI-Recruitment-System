@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 text-center">
+
+    <h1>AI Recruitment System</h1>
+
+    <p>
+        Find Your Dream Job and Hire the Best Talent
+    </p>
+
+    <br>
+
+    <a href="{{ url_for('candidate.register') }}">
+        Candidate Registration
+    </a>
+
+    <br><br>
+
+    <a href="#">Recruiter Registration</a>
+
+    <br><br>
+
+    <a href="{{ url_for('auth.login_page') }}">
+        Login
+    </a>
+
+</div>
+
+{% endblock %}

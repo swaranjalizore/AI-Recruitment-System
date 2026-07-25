@@ -1,0 +1,23 @@
+<nav>
+    <h2>AI Recruitment System</h2>
+
+    {% if session.get("role") == "candidate" %}
+
+        <a href="{{ url_for('candidate.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+
+    {% elif session.get("role") == "recruiter" %}
+
+        <a href="{{ url_for('recruiter.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+
+    {% elif session.get("role") == "admin" %}
+
+        <a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+
+    {% endif %}
+
+</nav>
+
+<hr>
