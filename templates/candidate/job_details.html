@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ job.job_title }} - Job Details</title>
+</head>
+
+<body>
+
+    <h1>{{ job.job_title }}</h1>
+
+    <hr>
+
+    <h2>Job Description</h2>
+    <p>{{ job.description }}</p>
+
+    <h2>Required Skills</h2>
+    <p>{{ job.required_skills }}</p>
+
+    <h2>Experience Required</h2>
+    <p>{{ job.experience_required }} years</p>
+
+    <h2>Salary</h2>
+
+    {% if job.salary %}
+        <p>₹{{ "%.2f"|format(job.salary) }}</p>
+    {% else %}
+        <p>Not specified</p>
+    {% endif %}
+
+    <h2>Location</h2>
+    <p>{{ job.location }}</p>
+
+    <h2>Employment Type</h2>
+
+    {% if job.employment_type %}
+        <p>{{ job.employment_type }}</p>
+    {% else %}
+        <p>Not specified</p>
+    {% endif %}
+
+    <h2>Openings</h2>
+    <p>{{ job.openings }}</p>
+
+    <h2>Posted Date</h2>
+    <p>{{ job.posted_date }}</p>
+
+    <hr>
+
+    <a href="{{ url_for('candidate.browse_jobs') }}">
+        Back to Browse Jobs
+    </a>
+
+    <form
+        action="{{ url_for('candidate.apply_job', job_id=job.job_id) }}"
+        method="POST"
+    >
+        <button type="submit">
+            Apply for Job
+        </button>
+    </form>
+
+</body>
+</html>

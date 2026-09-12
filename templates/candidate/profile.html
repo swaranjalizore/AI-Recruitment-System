@@ -16,7 +16,7 @@ Candidate Profile
 
         <div class="card-body">
 
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
 
                 <div class="mb-3">
                     <label class="form-label">Full Name</label>
@@ -79,6 +79,24 @@ Candidate Profile
                         name="location"
                         value="{{ user.location }}">
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload Resume (PDF)</label>
+
+                    <input
+                        type="file"
+                        name="resume"
+                        class="form-control"
+                        accept=".pdf"
+                    >
+                </div>
+
+                {% if user.resume_file %}
+                <p>
+                    Current Resume:
+                    {{ user.resume_file }}
+                </p>
+                {% endif %}
 
                 <button class="btn btn-primary">
                     Save Profile
