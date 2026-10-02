@@ -6,24 +6,78 @@ Candidate Dashboard
 
 {% block content %}
 
-<h1>Candidate Dashboard</h1>
+<div class="container py-5">
 
-<h2>Welcome {{ session["name"] }}</h2>
+```
+<div class="card shadow-sm border-0">
 
-<a href="{{ url_for('candidate.profile') }}" class="btn btn-primary">
-    My Profile
-</a>
+    <div class="card-body p-4 p-md-5">
 
-<a href="{{ url_for('candidate.browse_jobs') }}" class="btn btn-primary">
-    Browse Jobs
-</a>
+        <div class="text-center mb-5">
 
-<a href="{{ url_for('candidate.applied_jobs') }}" class="btn btn-primary">
-    Applied Jobs
-</a>
+            <h1 class="fw-bold">
+                Candidate Dashboard
+            </h1>
 
-<a href="{{ url_for('auth.logout') }}" class="btn btn-danger">
-    Logout
-</a>
+            <p class="text-muted mt-2 mb-0">
+                Welcome, {{ session["name"] }}
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <a
+                    href="{{ url_for('candidate.profile') }}"
+                    class="btn btn-primary w-100 py-3"
+                >
+                    My Profile
+                </a>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <a
+                    href="{{ url_for('candidate.browse_jobs') }}"
+                    class="btn btn-primary w-100 py-3"
+                >
+                    Browse Jobs
+                </a>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <a
+                    href="{{ url_for('candidate.applied_jobs') }}"
+                    class="btn btn-primary w-100 py-3"
+                >
+                    Applied Jobs
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="text-center mt-5">
+
+            <a
+                href="{{ url_for('auth.logout') }}"
+                class="btn btn-outline-danger px-4"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
 
 {% endblock %}

@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, session, redirect, url_for, request, current_app
+from flask import Blueprint, render_template, session, redirect, url_for, request, current_app, flash
 from database.db import get_db_connection
 import os
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash
 
 candidate = Blueprint("candidate", __name__)
 
@@ -25,17 +26,27 @@ def register():
     if request.method == "GET":
         return render_template("candidate/register.html")
 
-    full_name = request.form["full_name"]
-    email = request.form["email"]
-    phone = request.form["phone"]
-    password = request.form["password"]
-    confirm_password = request.form["confirm_password"]
+    full_name = request.form.get("full_name")
+    email = request.form.get("email")
+    phone = request.form.get("phone")
+    password = request.form.get("password")
+    confirm_password = request.form.get("confirm_password")
 
-    
+    if not full_name or not email or not phone:
+        flash("Required candidate fields are missing.", "danger")
+        return redirect(url_for("candidate.register"))
+
+    if not password or not confirm_password:
+            flash("Password fields are required.", "danger")
+            return redirect(url_for("candidate.register"))
+
     if password != confirm_password:
-        return "Passwords do not match!"
+            flash("Passwords do not match!", "danger")
+            return redirect(url_for("candidate.register"))
 
     connection = get_db_connection()
+    if connection is None:
+        return "Database connection failed.", 500
     cursor = connection.cursor(dictionary=True)
 
     query = """
@@ -45,11 +56,12 @@ def register():
     """
 
     cursor.execute(query, (email,))
-
     user = cursor.fetchone()
+
     if user:
         connection.close()
-        return "Email already registered!"
+        flash("Email already registered!", "danger")
+        return redirect(url_for("candidate.register"))
 
     query = """
     INSERT INTO candidate
@@ -57,9 +69,10 @@ def register():
     VALUES (%s, %s, %s, %s)
     """
 
+    password_hash = generate_password_hash(password)
     print("Before INSERT")
 
-    cursor.execute(query, (full_name, email, password, phone))
+    cursor.execute(query, (full_name, email, password_hash, phone))
 
     print("After INSERT")
 
@@ -80,18 +93,29 @@ def profile():
     if "user_id" not in session:
         return redirect(url_for("auth.login_page"))
 
+    if session.get("role") != "candidate":
+        return "Access Denied!"
+
     connection = get_db_connection()
+    if connection is None:
+        return "Database connection failed.", 500
+
     cursor = connection.cursor(dictionary=True)
 
     # ================= UPDATE PROFILE =================
     if request.method == "POST":
 
-        full_name = request.form["full_name"]
-        phone = request.form["phone"]
-        education = request.form["education"]
-        skills = request.form["skills"]
-        experience = request.form["experience"]
-        location = request.form["location"]
+        full_name = request.form.get("full_name")
+        phone = request.form.get("phone")
+        education = request.form.get("education")
+        skills = request.form.get("skills")
+        experience = request.form.get("experience")
+        location = request.form.get("location")
+
+        if not full_name:
+            connection.close()
+            flash("Full name is required.", "danger")
+            return redirect(url_for("candidate.profile"))
 
         resume = request.files.get("resume")
 
@@ -101,9 +125,24 @@ def profile():
 
             if not resume.filename.lower().endswith(".pdf"):
                 connection.close()
-                return "Only PDF resumes are allowed."
+                flash("Only PDF resumes are allowed.", "danger")
+                return redirect(url_for("candidate.profile"))
 
-            resume_filename = secure_filename(resume.filename)
+            # Check whether the uploaded file is actually a PDF
+            resume.seek(0)
+            file_header = resume.read(4)
+            resume.seek(0)
+
+            if file_header != b"%PDF":
+                connection.close()
+                flash("Invalid PDF file.", "danger")
+                return redirect(url_for("candidate.profile"))
+
+            original_filename = secure_filename(resume.filename)
+
+            name, extension = os.path.splitext(original_filename)
+
+            resume_filename = f"{session['user_id']}_{name}{extension}"
 
             upload_folder = os.path.join(
                 current_app.root_path,
@@ -174,6 +213,7 @@ def profile():
         connection.commit()
         connection.close()
 
+        flash("Profile updated successfully.", "success")
         return redirect(url_for("candidate.profile"))
 
     # ================= SHOW PROFILE =================
@@ -206,6 +246,8 @@ def browse_jobs():
         return "Access Denied!"
 
     connection = get_db_connection()
+    if connection is None:
+        return "Database connection failed.", 500
     cursor = connection.cursor(dictionary=True)
 
     query = """
@@ -248,6 +290,9 @@ def job_details(job_id):
         return "Access Denied!"
 
     connection = get_db_connection()
+    if connection is None:
+        return "Database connection failed.", 500
+
     cursor = connection.cursor(dictionary=True)
 
     query = """
@@ -275,7 +320,8 @@ def job_details(job_id):
 
     # If job does not exist or is not open
     if not job:
-        return "Job not found or no longer available."
+        flash("Job not found or no longer available.", "warning")
+        return redirect(url_for("candidate.browse_jobs"))
 
     return render_template(
         "candidate/job_details.html",
@@ -294,6 +340,8 @@ def apply_job(job_id):
         return "Access Denied!"
 
     connection = get_db_connection()
+    if connection is None:
+        return "Database connection failed.", 500
     cursor = connection.cursor(dictionary=True)
 
     # Check whether the job exists and is still open
@@ -310,7 +358,8 @@ def apply_job(job_id):
 
     if not job:
         connection.close()
-        return "Job not found or no longer available."
+        flash("Job not found or no longer available.", "warning")
+        return redirect(url_for("candidate.browse_jobs"))
 
     # Check whether candidate has already applied
     query = """
@@ -332,7 +381,13 @@ def apply_job(job_id):
 
     if existing_application:
         connection.close()
-        return "You have already applied for this job."
+        flash("You have already applied for this job.", "warning")
+        return redirect(
+            url_for(
+                "candidate.job_details",
+                job_id=job_id
+            )
+        )
 
     # Create new application
     query = """
@@ -357,6 +412,8 @@ def apply_job(job_id):
     connection.commit()
     connection.close()
 
+    flash("Job application submitted successfully.", "success")
+
     return redirect(
         url_for(
             "candidate.job_details",
@@ -376,6 +433,8 @@ def applied_jobs():
         return "Access Denied!"
 
     connection = get_db_connection()
+    if connection is None:
+        return "Database connection failed.", 500
     cursor = connection.cursor(dictionary=True)
 
     query = """

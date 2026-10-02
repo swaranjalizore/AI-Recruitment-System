@@ -1,66 +1,181 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>{{ job.job_title }} - Job Details</title>
-</head>
+{% block title %}
+{{ job.job_title }} - Job Details
+{% endblock %}
 
-<body>
+{% block content %}
 
-    <h1>{{ job.job_title }}</h1>
+<div class="container py-5">
 
-    <hr>
+    <div class="row justify-content-center">
 
-    <h2>Job Description</h2>
-    <p>{{ job.description }}</p>
+        <div class="col-lg-9">
 
-    <h2>Required Skills</h2>
-    <p>{{ job.required_skills }}</p>
+            <div class="card shadow-sm border-0">
 
-    <h2>Experience Required</h2>
-    <p>{{ job.experience_required }} years</p>
+                <div class="card-header bg-primary text-white p-4">
 
-    <h2>Salary</h2>
+                    <h1 class="fw-bold mb-2">
+                        {{ job.job_title }}
+                    </h1>
 
-    {% if job.salary %}
-        <p>₹{{ "%.2f"|format(job.salary) }}</p>
-    {% else %}
-        <p>Not specified</p>
-    {% endif %}
+                    <p class="mb-0">
+                        {{ job.location }}
+                    </p>
 
-    <h2>Location</h2>
-    <p>{{ job.location }}</p>
+                </div>
 
-    <h2>Employment Type</h2>
+                <div class="card-body p-4">
 
-    {% if job.employment_type %}
-        <p>{{ job.employment_type }}</p>
-    {% else %}
-        <p>Not specified</p>
-    {% endif %}
+                    {% with messages = get_flashed_messages(with_categories=true) %}
 
-    <h2>Openings</h2>
-    <p>{{ job.openings }}</p>
+                        {% if messages %}
 
-    <h2>Posted Date</h2>
-    <p>{{ job.posted_date }}</p>
+                            {% for category, message in messages %}
 
-    <hr>
+                                <div class="alert alert-{{ category }}" role="alert">
+                                    {{ message }}
+                                </div>
 
-    <a href="{{ url_for('candidate.browse_jobs') }}">
-        Back to Browse Jobs
-    </a>
+                            {% endfor %}
 
-    <form
-        action="{{ url_for('candidate.apply_job', job_id=job.job_id) }}"
-        method="POST"
-    >
-        <button type="submit">
-            Apply for Job
-        </button>
-    </form>
+                        {% endif %}
 
-</body>
-</html>
+                    {% endwith %}
+
+                    <div class="row g-4 mb-4">
+
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <small class="text-muted d-block">
+                                    Experience
+                                </small>
+                                <strong>
+                                    {{ job.experience_required }} years
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <small class="text-muted d-block">
+                                    Employment Type
+                                </small>
+                                <strong>
+                                    {{ job.employment_type or "Not specified" }}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <small class="text-muted d-block">
+                                    Openings
+                                </small>
+                                <strong>
+                                    {{ job.openings }}
+                                </strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-4">
+
+                        <h4 class="fw-bold mb-3">
+                            Job Description
+                        </h4>
+
+                        <p class="text-muted">
+                            {{ job.description }}
+                        </p>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <h4 class="fw-bold mb-3">
+                            Required Skills
+                        </h4>
+
+                        <p class="text-muted">
+                            {{ job.required_skills }}
+                        </p>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <h4 class="fw-bold mb-3">
+                            Salary
+                        </h4>
+
+                        {% if job.salary %}
+
+                            <p class="text-muted">
+                                ₹{{ "%.2f"|format(job.salary) }}
+                            </p>
+
+                        {% else %}
+
+                            <p class="text-muted">
+                                Not specified
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <h4 class="fw-bold mb-3">
+                            Posted Date
+                        </h4>
+
+                        <p class="text-muted">
+                            {{ job.posted_date }}
+                        </p>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex gap-2 flex-wrap">
+
+                        <a
+                            href="{{ url_for('candidate.browse_jobs') }}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Back to Browse Jobs
+                        </a>
+
+                        <form
+                            action="{{ url_for('candidate.apply_job', job_id=job.job_id) }}"
+                            method="POST"
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Apply for Job
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

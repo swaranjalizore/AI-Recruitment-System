@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}
+Recruiter Registration
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+```
+<div class="row justify-content-center">
+
+    <div class="col-lg-7 col-md-9">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h2 class="mb-0">
+                    Recruiter Registration
+                </h2>
+            </div>
+
+            <div class="card-body p-4">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+
+                    {% if messages %}
+
+                        {% for category, message in messages %}
+
+                            <div class="alert alert-{{ category }}" role="alert">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                {% endwith %}
+
+                <form
+                    action="{{ url_for('recruiter.register') }}"
+                    method="POST"
+                >
+
+                    <div class="mb-3">
+                        <label
+                            for="company_name"
+                            class="form-label"
+                        >
+                            Company Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="company_name"
+                            name="company_name"
+                            class="form-control"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label
+                            for="hr_name"
+                            class="form-label"
+                        >
+                            HR Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="hr_name"
+                            name="hr_name"
+                            class="form-control"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label
+                            for="email"
+                            class="form-label"
+                        >
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label
+                            for="phone"
+                            class="form-label"
+                        >
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            class="form-control"
+                            pattern="[0-9]{10}"
+                            maxlength="10"
+                            minlength="10"
+                            placeholder="Enter 10-digit phone number"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label
+                            for="company_location"
+                            class="form-label"
+                        >
+                            Company Location
+                        </label>
+
+                        <input
+                            type="text"
+                            id="company_location"
+                            name="company_location"
+                            class="form-control"
+                            placeholder="Enter company location"
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label
+                            for="designation"
+                            class="form-label"
+                        >
+                            Designation
+                        </label>
+
+                        <input
+                            type="text"
+                            id="designation"
+                            name="designation"
+                            class="form-control"
+                            placeholder="e.g. HR Manager"
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label
+                            for="password"
+                            class="form-label"
+                        >
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control"
+                            autocomplete="new-password"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-4">
+                        <label
+                            for="confirm_password"
+                            class="form-label"
+                        >
+                            Confirm Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            class="form-control"
+                            autocomplete="new-password"
+                            required
+                        >
+                    </div>
+
+                    <div class="d-grid">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-lg"
+                        >
+                            Register
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

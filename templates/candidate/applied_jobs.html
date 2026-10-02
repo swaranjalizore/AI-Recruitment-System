@@ -6,105 +6,165 @@ Applied Jobs
 
 {% block content %}
 
-<div class="container mt-4">
+<div class="container py-5">
 
-    <h1>Applied Jobs</h1>
+    <div class="text-center mb-5">
 
-    <p>
-        Jobs you have applied for
-    </p>
+        <h1 class="fw-bold">
+            Applied Jobs
+        </h1>
 
-    <hr>
+        <p class="text-muted">
+            Track the jobs you have applied for.
+        </p>
+
+    </div>
 
     {% if applications %}
 
-        {% for application in applications %}
+        <div class="row g-4">
 
-            <div class="card mb-4">
+            {% for application in applications %}
 
-                <div class="card-body">
+                <div class="col-lg-6">
 
-                    <h3 class="card-title">
-                        {{ application.job_title }}
-                    </h3>
+                    <div class="card shadow-sm border-0 h-100">
 
-                    <p>
-                        <strong>Company:</strong>
-                        {{ application.company_name }}
-                    </p>
+                        <div class="card-body p-4">
 
-                    <p>
-                        <strong>Location:</strong>
-                        {{ application.location }}
-                    </p>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
 
-                    <p>
-                        <strong>Employment Type:</strong>
-                        {{ application.employment_type }}
-                    </p>
+                                <h3 class="fw-bold mb-0">
+                                    {{ application.job_title }}
+                                </h3>
 
-                    <p>
-                        <strong>Experience Required:</strong>
-                        {{ application.experience_required }} years
-                    </p>
+                                {% if application.status == "Pending" %}
 
-                    <p>
-                        <strong>Salary:</strong>
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
 
-                        {% if application.salary %}
-                            ₹{{ application.salary }}
-                        {% else %}
-                            Not specified
-                        {% endif %}
+                                {% elif application.status == "Accepted" %}
 
-                    </p>
+                                    <span class="badge bg-success">
+                                        Accepted
+                                    </span>
 
-                    <p>
-                        <strong>Application Date:</strong>
-                        {{ application.application_date }}
-                    </p>
+                                {% elif application.status == "Rejected" %}
 
-                    <p>
-                        <strong>Status:</strong>
-                        {{ application.status }}
-                    </p>
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
 
-                    <p>
-                        <strong>Match Score:</strong>
+                                {% else %}
 
-                        {% if application.match_score is not none %}
-                            {{ application.match_score }}%
-                        {% else %}
-                            Not calculated
-                        {% endif %}
+                                    <span class="badge bg-secondary">
+                                        {{ application.status }}
+                                    </span>
 
-                    </p>
+                                {% endif %}
 
-                    <a
-                        href="{{ url_for('candidate.job_details', job_id=application.job_id) }}"
-                        class="btn btn-primary"
-                    >
-                        View Job
-                    </a>
+                            </div>
+
+                            <p class="text-muted mb-2">
+                                <strong>Company:</strong>
+                                {{ application.company_name }}
+                            </p>
+
+                            <p class="text-muted mb-2">
+                                <strong>Location:</strong>
+                                {{ application.location }}
+                            </p>
+
+                            <p class="text-muted mb-2">
+                                <strong>Employment Type:</strong>
+                                {{ application.employment_type or "Not specified" }}
+                            </p>
+
+                            <p class="text-muted mb-2">
+                                <strong>Experience:</strong>
+                                {{ application.experience_required }} years
+                            </p>
+
+                            <p class="text-muted mb-2">
+                                <strong>Salary:</strong>
+
+                                {% if application.salary %}
+                                    ₹{{ application.salary }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </p>
+
+                            <p class="text-muted mb-3">
+                                <strong>Application Date:</strong>
+                                {{ application.application_date }}
+                            </p>
+
+                            <div class="border rounded p-3 mb-4">
+
+                                <small class="text-muted d-block">
+                                    Match Score
+                                </small>
+
+                                {% if application.match_score is not none %}
+
+                                    <span class="fw-bold text-primary">
+                                        {{ application.match_score }}%
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Not calculated
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                            <a
+                                href="{{ url_for('candidate.job_details', job_id=application.job_id) }}"
+                                class="btn btn-primary"
+                            >
+                                View Job
+                            </a>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-            </div>
+            {% endfor %}
 
-        {% endfor %}
+        </div>
 
     {% else %}
 
-        <div class="alert alert-info">
-            You have not applied for any jobs yet.
-        </div>
+        <div class="card shadow-sm border-0">
 
-        <a
-            href="{{ url_for('candidate.browse_jobs') }}"
-            class="btn btn-primary"
-        >
-            Browse Jobs
-        </a>
+            <div class="card-body text-center p-5">
+
+                <h4 class="fw-bold">
+                    No Applications Yet
+                </h4>
+
+                <p class="text-muted mb-4">
+                    You have not applied for any jobs yet.
+                </p>
+
+                <a
+                    href="{{ url_for('candidate.browse_jobs') }}"
+                    class="btn btn-primary"
+                >
+                    Browse Jobs
+                </a>
+
+            </div>
+
+        </div>
 
     {% endif %}
 

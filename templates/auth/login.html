@@ -1,69 +1,197 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Recruitment System - Login</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+{% block title %}
+Login
+{% endblock %}
 
-<body>
+{% block content %}
 
-<div class="login-container">
+<div class="container py-5">
 
-    <h1>AI Recruitment System</h1>
+    <div class="row justify-content-center">
 
-    <h2>Login</h2>
+        <div class="col-lg-5 col-md-7">
 
-    <form action="{{ url_for('auth.login') }}" method="POST">
+            <div class="card shadow-sm border-0">
 
-        <label>Login As</label>
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h2 class="mb-0">
+                        Login
+                    </h2>
+                </div>
 
-        <div class="role-selection">
+                <div class="card-body p-4">
 
-            <label>
-                <input type="radio" name="role" value="candidate" required>
-                Candidate
-            </label>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
 
-            <label>
-                <input type="radio" name="role" value="recruiter">
-                Recruiter
-            </label>
+                        {% if messages %}
 
-            <label>
-                <input type="radio" name="role" value="admin">
-                Admin
-            </label>
+                            {% for category, message in messages %}
+
+                                <div class="alert alert-{{ category }}" role="alert">
+                                    {{ message }}
+                                </div>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+                    {% endwith %}
+
+                    <form
+                        action="{{ url_for('auth.login') }}"
+                        method="POST"
+                    >
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Login As
+                            </label>
+
+                            <div class="d-flex gap-4">
+
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="role"
+                                        value="candidate"
+                                        id="candidate"
+                                        required
+                                    >
+
+                                    <label
+                                        class="form-check-label"
+                                        for="candidate"
+                                    >
+                                        Candidate
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="role"
+                                        value="recruiter"
+                                        id="recruiter"
+                                    >
+
+                                    <label
+                                        class="form-check-label"
+                                        for="recruiter"
+                                    >
+                                        Recruiter
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="role"
+                                        value="admin"
+                                        id="admin"
+                                    >
+
+                                    <label
+                                        class="form-check-label"
+                                        for="admin"
+                                    >
+                                        Admin
+                                    </label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label
+                                for="email"
+                                class="form-label"
+                            >
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="Enter your email"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label
+                                for="password"
+                                class="form-label"
+                            >
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="d-grid">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-lg"
+                            >
+                                Login
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                    <div class="text-center mt-4">
+
+                        <p class="text-muted mb-2">
+                            Don't have an account?
+                        </p>
+
+                        <a
+                            href="{{ url_for('candidate.register') }}"
+                            class="btn btn-outline-primary btn-sm me-2"
+                        >
+                            Candidate Registration
+                        </a>
+
+                        <a
+                            href="{{ url_for('recruiter.register') }}"
+                            class="btn btn-outline-primary btn-sm"
+                        >
+                            Recruiter Registration
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
-        <label>Email</label>
-
-        <input
-            type="email"
-            name="email"
-            placeholder="Enter Email"
-            required
-        >
-
-        <label>Password</label>
-
-        <input
-            type="password"
-            name="password"
-            placeholder="Enter Password"
-            required
-        >
-
-        <button type="submit">
-            Login
-        </button>
-
-    </form>
+    </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

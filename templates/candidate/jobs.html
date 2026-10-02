@@ -1,65 +1,140 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Browse Jobs</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}
+Browse Jobs
+{% endblock %}
 
-    <h1>Browse Jobs</h1>
+{% block content %}
+
+<div class="container py-5">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold">
+            Browse Jobs
+        </h1>
+
+        <p class="text-muted">
+            Explore available job opportunities and find your next career opportunity.
+        </p>
+
+    </div>
 
     {% if jobs %}
 
-        {% for job in jobs %}
+        <div class="row g-4">
 
-            <div>
-                <h2>{{ job.job_title }}</h2>
+            {% for job in jobs %}
 
-                <p>
-                    <strong>Location:</strong>
-                    {{ job.location }}
-                </p>
+                <div class="col-lg-6">
 
-                <p>
-                    <strong>Employment Type:</strong>
-                    {{ job.employment_type }}
-                </p>
+                    <div class="card shadow-sm border-0 h-100">
 
-                <p>
-                    <strong>Experience:</strong>
-                    {{ job.experience_required }} years
-                </p>
+                        <div class="card-body p-4">
 
-                <p>
-                    <strong>Salary:</strong>
-                    {{ job.salary }}
-                </p>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
 
-                <p>
-                    <strong>Required Skills:</strong>
-                    {{ job.required_skills }}
-                </p>
+                                <h3 class="card-title fw-bold mb-0">
+                                    {{ job.job_title }}
+                                </h3>
 
-                <p>
-                    <strong>Openings:</strong>
-                    {{ job.openings }}
-                </p>
+                                <span class="badge bg-primary">
+                                    {{ job.employment_type or "Job" }}
+                                </span>
 
-                <hr>
+                            </div>
 
-                <a href="{{ url_for('candidate.job_details', job_id=job.job_id) }}">
-                    View Details
-                </a>
+                            <p class="text-muted mb-2">
+                                <strong>Location:</strong>
+                                {{ job.location }}
+                            </p>
 
-            </div>
+                            <p class="text-muted mb-2">
+                                <strong>Experience:</strong>
+                                {{ job.experience_required }} years
+                            </p>
 
-        {% endfor %}
+                            <p class="text-muted mb-2">
+                                <strong>Salary:</strong>
+
+                                {% if job.salary %}
+                                    ₹{{ job.salary }}
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </p>
+
+                            <p class="text-muted mb-3">
+                                <strong>Openings:</strong>
+                                {{ job.openings }}
+                            </p>
+
+                            <div class="mb-4">
+
+                                <p class="fw-semibold mb-2">
+                                    Required Skills
+                                </p>
+
+                                <p class="text-muted">
+                                    {{ job.required_skills }}
+                                </p>
+
+                            </div>
+
+                            <a
+                                href="{{ url_for('candidate.job_details', job_id=job.job_id) }}"
+                                class="btn btn-primary"
+                            >
+                                View Job Details
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
 
     {% else %}
 
-        <p>No jobs are currently available.</p>
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body text-center p-5">
+
+                <h4 class="fw-bold">
+                    No Jobs Available
+                </h4>
+
+                <p class="text-muted mb-4">
+                    There are currently no open job opportunities.
+                </p>
+
+            </div>
+
+        </div>
 
     {% endif %}
 
-</body>
-</html>
+</div>
+
+{% endblock %}
